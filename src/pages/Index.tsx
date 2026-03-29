@@ -104,7 +104,7 @@ const Index = () => {
             <div className="border border-border p-6 bg-background">
               <h4 className="font-semibold text-foreground text-sm uppercase tracking-wider mb-2">With Containers</h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                We present a curated selection of organizing containers for you to choose from. We then purchase and install them on your behalf — the additional cost covers the containers themselves. You are also welcome to purchase containers on your own; however, we are more than happy to source and order them for you.
+                We present a curated selection of organizing containers for you to choose from. We then purchase and install them on your behalf — the additional cost covers the containers themselves.
               </p>
             </div>
           </div>
