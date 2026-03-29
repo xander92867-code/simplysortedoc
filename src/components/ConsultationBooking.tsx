@@ -84,7 +84,7 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
               mode="single"
               selected={date}
               onSelect={setDate}
-              disabled={(d) => d < today || d.getDay() === 0}
+              disabled={(d) => d < today}
               className="rounded-md border pointer-events-auto mx-auto"
             />
           </div>

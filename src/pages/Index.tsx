@@ -42,7 +42,7 @@ const Index = () => {
       {/* Hero */}
       <header className="py-28 md:py-36 text-center bg-secondary/20">
         <div className="max-w-3xl mx-auto px-6">
-          <img src={logo} alt="Simply Sorted OC - Organizing Services" className="h-40 md:h-52 w-auto mx-auto mb-6" />
+          <img src={logo} alt="Simply Sorted OC - Organizing Services" className="h-64 md:h-80 w-auto mx-auto mb-6" />
           <h1 className="font-['Playfair_Display',serif] text-4xl md:text-5xl text-foreground mb-3">
             Simply Sorted OC
           </h1>
@@ -104,7 +104,7 @@ const Index = () => {
             <div className="border border-border p-6 bg-background">
               <h4 className="font-semibold text-foreground text-sm uppercase tracking-wider mb-2">With Containers</h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                We present a curated selection of organizing containers for you to choose from. We then purchase and install them on your behalf — the additional cost covers the containers themselves. You are also welcome to purchase containers on your own; however, we are more than happy to source and order them for you.
+                We present a curated selection of organizing containers for you to choose from. We then purchase and install them on your behalf — the additional cost covers the containers themselves.
               </p>
             </div>
           </div>
@@ -161,7 +161,7 @@ const Index = () => {
           </div>
 
           <ConsultationBooking>
-            <Button variant="outline" size="lg" className="rounded-none px-10 py-6 text-sm uppercase tracking-widest font-semibold border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground mb-10">
+            <Button variant="outline" size="lg" className="rounded-none px-10 py-6 text-sm uppercase tracking-widest font-semibold border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground mb-10">
               Book a Consultation
             </Button>
           </ConsultationBooking>
