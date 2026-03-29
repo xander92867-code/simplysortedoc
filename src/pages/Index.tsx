@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, Instagram } from "lucide-react";
+import logo from "@/assets/logo.jpeg";
 
 const services = [
   { title: "Residential Spaces", description: "Expertly organized kitchens, pantries, bedrooms, closets, bathrooms, and laundry rooms tailored to your lifestyle." },
