@@ -42,7 +42,7 @@ const Index = () => {
       {/* Hero */}
       <header className="py-28 md:py-36 text-center bg-secondary/20">
         <div className="max-w-3xl mx-auto px-6">
-          <img src={logo} alt="Simply Sorted OC - Organizing Services" className="h-64 md:h-80 w-auto mx-auto mb-6" />
+          <img src={logo} alt="Simply Sorted OC - Organizing Services" className="h-[28rem] md:h-[36rem] w-auto mx-auto mb-6" />
           <h1 className="font-['Playfair_Display',serif] text-4xl md:text-5xl text-foreground mb-3">
             Simply Sorted OC
           </h1>
