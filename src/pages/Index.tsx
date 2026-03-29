@@ -23,7 +23,10 @@ const Index = () => {
   return (
     <div className="min-h-screen scroll-smooth">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border px-5 py-4 flex items-center justify-center gap-8">
+      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border px-5 py-3 flex items-center justify-center gap-8">
+        <a href="#" className="absolute left-5">
+          <img src={logo} alt="Simply Sorted OC" className="h-10 w-auto" />
+        </a>
         {["Services", "Pricing", "Contact"].map((item) => (
           <a
             key={item}
