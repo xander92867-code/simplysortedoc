@@ -38,6 +38,10 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [notes, setNotes] = React.useState("");
+  const [cardName, setCardName] = React.useState("");
+  const [cardNumber, setCardNumber] = React.useState("");
+  const [cardExpiry, setCardExpiry] = React.useState("");
+  const [cardCvv, setCardCvv] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
   const generateIcsFile = (selectedDate: Date, selectedTime: string) => {
