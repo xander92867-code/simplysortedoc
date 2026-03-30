@@ -93,7 +93,7 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date || !time || !name || !phone) {
+    if (!date || !time || !name || !phone || !cardName || !cardNumber || !cardExpiry || !cardCvv) {
       toast.error("Please fill in all required fields.");
       return;
     }
