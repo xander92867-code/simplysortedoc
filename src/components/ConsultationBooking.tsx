@@ -108,6 +108,10 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
     setEmail("");
     setPhone("");
     setNotes("");
+    setCardName("");
+    setCardNumber("");
+    setCardExpiry("");
+    setCardCvv("");
   };
 
   const today = new Date();
