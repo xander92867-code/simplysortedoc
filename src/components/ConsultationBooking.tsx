@@ -181,6 +181,38 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
             />
           </div>
 
+          {/* Card on File */}
+          <div className="space-y-3 border border-border rounded-sm p-4 bg-secondary/30">
+            <p className="font-semibold text-foreground text-xs uppercase tracking-wider flex items-center gap-2">
+              💳 Card on File <span className="text-muted-foreground font-normal normal-case tracking-normal">(for cancellation fee only)</span>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Your card will <strong className="text-foreground">only</strong> be charged the $15 cancellation fee if you cancel without 48 hours' notice. It will not be charged for any other reason.
+            </p>
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold">Name on Card *</Label>
+              <Input value={cardName} onChange={(e) => setCardName(e.target.value)} placeholder="Name as it appears on card" required />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold">Card Number *</Label>
+              <Input value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16))} placeholder="1234 5678 9012 3456" required />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">Expiration *</Label>
+                <Input value={cardExpiry} onChange={(e) => {
+                  let val = e.target.value.replace(/\D/g, '').slice(0, 4);
+                  if (val.length >= 3) val = val.slice(0, 2) + '/' + val.slice(2);
+                  setCardExpiry(val);
+                }} placeholder="MM/YY" required />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">CVV *</Label>
+                <Input value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="123" required />
+              </div>
+            </div>
+          </div>
+
           {/* Important Notices */}
           <div className="bg-secondary/50 border border-border rounded-sm p-4 space-y-2 text-sm text-muted-foreground">
             <p className="font-semibold text-foreground text-xs uppercase tracking-wider mb-2">
