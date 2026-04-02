@@ -22,6 +22,7 @@ const pricing = [
 ];
 
 const Index = () => {
+  useReservationConfirmation();
   return (
     <div className="min-h-screen scroll-smooth">
       {/* Navigation */}
