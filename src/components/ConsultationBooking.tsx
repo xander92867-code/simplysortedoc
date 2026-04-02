@@ -1,7 +1,6 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { CalendarIcon, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -23,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const timeSlots = [
   "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
@@ -38,80 +38,41 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [notes, setNotes] = React.useState("");
-  const [cardName, setCardName] = React.useState("");
-  const [cardNumber, setCardNumber] = React.useState("");
-  const [cardExpiry, setCardExpiry] = React.useState("");
-  const [cardCvv, setCardCvv] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  const generateIcsFile = (selectedDate: Date, selectedTime: string) => {
-    const [timePart, meridiem] = selectedTime.split(" ");
-    const [hours, minutes] = timePart.split(":").map(Number);
-    let hour24 = hours;
-    if (meridiem === "PM" && hours !== 12) hour24 += 12;
-    if (meridiem === "AM" && hours === 12) hour24 = 0;
-
-    const startDate = new Date(selectedDate);
-    startDate.setHours(hour24, minutes, 0, 0);
-    const endDate = new Date(startDate);
-    endDate.setHours(hour24 + 1);
-
-    const pad = (n: number) => n.toString().padStart(2, "0");
-    const formatIcs = (d: Date) =>
-      `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
-
-    const ics = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "BEGIN:VEVENT",
-      `DTSTART:${formatIcs(startDate)}`,
-      `DTEND:${formatIcs(endDate)}`,
-      "SUMMARY:Simply Sorted OC - Consultation",
-      "DESCRIPTION:Home organizing consultation with Simply Sorted OC. Please have photos of your space ready if requested.",
-      "BEGIN:VALARM",
-      "TRIGGER:-P1D",
-      "ACTION:DISPLAY",
-      "DESCRIPTION:Consultation tomorrow with Simply Sorted OC",
-      "END:VALARM",
-      "BEGIN:VALARM",
-      "TRIGGER:-PT2H",
-      "ACTION:DISPLAY",
-      "DESCRIPTION:Consultation in 2 hours with Simply Sorted OC",
-      "END:VALARM",
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\r\n");
-
-    const blob = new Blob([ics], { type: "text/calendar" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "simply-sorted-consultation.ics";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date || !time || !name || !phone || !cardName || !cardNumber || !cardExpiry || !cardCvv) {
+    if (!date || !time || !name || !phone) {
       toast.error("Please fill in all required fields.");
       return;
     }
-    generateIcsFile(date, time);
-    toast.success(
-      `Consultation reserved for ${format(date, "MMMM d, yyyy")} at ${time}. A calendar reminder has been downloaded!`
-    );
-    setOpen(false);
-    setDate(undefined);
-    setTime(undefined);
-    setName("");
-    setEmail("");
-    setPhone("");
-    setNotes("");
-    setCardName("");
-    setCardNumber("");
-    setCardExpiry("");
-    setCardCvv("");
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-reservation-checkout", {
+        body: {
+          name,
+          email,
+          phone,
+          notes,
+          date: format(date, "yyyy-MM-dd"),
+          time,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const today = new Date();
@@ -189,45 +150,16 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
             />
           </div>
 
-          {/* Card on File */}
-          <div className="space-y-3 border border-border rounded-sm p-4 bg-secondary/30">
-            <p className="font-semibold text-foreground text-xs uppercase tracking-wider flex items-center gap-2">
-              💳 Card on File <span className="text-muted-foreground font-normal normal-case tracking-normal">(for cancellation fee only)</span>
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Your card will <strong className="text-foreground">only</strong> be charged the $15 cancellation fee if you cancel without 48 hours' notice. It will not be charged for any other reason.
-            </p>
-            <div className="space-y-2">
-              <Label className="text-sm font-semibold">Name on Card *</Label>
-              <Input value={cardName} onChange={(e) => setCardName(e.target.value)} placeholder="Name as it appears on card" required />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm font-semibold">Card Number *</Label>
-              <Input value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16))} placeholder="1234 5678 9012 3456" required />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold">Expiration *</Label>
-                <Input value={cardExpiry} onChange={(e) => {
-                  let val = e.target.value.replace(/\D/g, '').slice(0, 4);
-                  if (val.length >= 3) val = val.slice(0, 2) + '/' + val.slice(2);
-                  setCardExpiry(val);
-                }} placeholder="MM/YY" required />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold">CVV *</Label>
-                <Input value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="123" required />
-              </div>
-            </div>
-          </div>
-
-          {/* Important Notices */}
+          {/* Card Info Notice */}
           <div className="bg-secondary/50 border border-border rounded-sm p-4 space-y-2 text-sm text-muted-foreground">
             <p className="font-semibold text-foreground text-xs uppercase tracking-wider mb-2">
-              Please Note
+              💳 Secure Payment via Stripe
             </p>
             <p>
-              • A <strong className="text-foreground">$15 cancellation fee</strong> applies if not notified at least <strong className="text-foreground">48 hours</strong> in advance.
+              You'll be redirected to Stripe's secure checkout to place a <strong className="text-foreground">$15 hold</strong> on your card.
+            </p>
+            <p>
+              • This hold is <strong className="text-foreground">only charged</strong> as a cancellation fee if you cancel without <strong className="text-foreground">48 hours'</strong> notice.
             </p>
             <p>
               • We may request photos of the space prior to your appointment to better prepare for your session.
@@ -240,8 +172,12 @@ export function ConsultationBooking({ children }: { children: React.ReactNode })
             </p>
           </div>
 
-          <Button type="submit" className="w-full rounded-none px-10 py-6 text-sm uppercase tracking-widest font-semibold">
-            Confirm Reservation
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-none px-10 py-6 text-sm uppercase tracking-widest font-semibold"
+          >
+            {loading ? "Redirecting to payment..." : "Continue to Payment"}
           </Button>
         </form>
       </DialogContent>
