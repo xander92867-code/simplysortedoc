@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, Instagram } from "lucide-react";
 import { ConsultationBooking } from "@/components/ConsultationBooking";
+import { useReservationConfirmation } from "@/hooks/useReservationConfirmation";
 import logo from "@/assets/logo.jpeg";
 
 const services = [
